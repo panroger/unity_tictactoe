@@ -1,0 +1,23 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "*.meta": true,
+        "**/Scenes.meta": true,
+        "Scenes.meta": true,
+        "**/*.meta": true,
+        "Scenes/SampleScene.unity": true,
+        "**/SampleScene.unity": true,
+        "Scenes/*.unity": true,
+        "Scenes/*.*": true,
+        "SampleScene.unity": true,
+        "**/*.unity": true,
+        "**/.vscode": true,
+        ".vscode": true
+    },
+    "explorerExclude.backup": {}
+}
