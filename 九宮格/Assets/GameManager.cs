@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     //*0 = no, 1 = player, 2 = CPU
     public int[,] mapIsOccupied;
     private gridController[,] map;
+    private bool playerTurn;
 
     void Awake()
     {
@@ -31,43 +32,66 @@ public class GameManager : MonoBehaviour
 
         mapIsOccupied = new int[3,3];
         map = new gridController[3, 3];
+        playerTurn = true;
         CreateBG();
     }
 
     //*-1 = 遊戲繼續, 0 = 平手, 1 = 玩家贏, 2 = CPU贏
-    public int checkWin(){
+    private int checkWin(int[,] map){
         int temp = 0;
-
-        for(int x = 0; x < 3; ++x){
-            for(int y = 0; y < 3; ++y){
-                temp += mapIsOccupied[x, y];
-            }
-        }
-        if(temp == 13) return 0; //平手
 
         //簡查直線
         for(int x = 0; x < 3; ++x){
-            if(mapIsOccupied[x, 0] == 0) continue;
+            if(map[x, 0] == 0) continue;
 
-            temp = mapIsOccupied[x, 0];
-            if(temp == (mapIsOccupied[x, 0] & mapIsOccupied[x, 1] & mapIsOccupied[x, 2])) return temp;
+            temp = map[x, 0];
+            if(temp == (map[x, 0] & map[x, 1] & map[x, 2])) return temp;
         }
 
         //簡查橫線
         for(int y = 0; y < 3; ++y){
-            if(mapIsOccupied[0, y] == 0) continue;
+            if(map[0, y] == 0) continue;
 
-            temp = mapIsOccupied[0, y];
-            if(temp == (mapIsOccupied[0, y] & mapIsOccupied[1, y] & mapIsOccupied[2, y])) return temp;
+            temp = map[0, y];
+            if(temp == (map[0, y] & map[1, y] & map[2, y])) return temp;
         }
 
         //檢查對角線
-        if(mapIsOccupied[1, 1] == 0) return -1;
-        temp = mapIsOccupied[1, 1];
-        if(temp == (mapIsOccupied[0, 0] & mapIsOccupied[1, 1] & mapIsOccupied[2, 2])) return temp;
-        else if(temp == (mapIsOccupied[0, 2] & mapIsOccupied[1, 1] & mapIsOccupied[2, 0])) return temp;
+        if(map[1, 1] == 0) return -1;
+        temp = map[1, 1];
+        if(temp == (map[0, 0] & map[1, 1] & map[2, 2])) return temp;
+        else if(temp == (map[0, 2] & map[1, 1] & map[2, 0])) return temp;
+
+        //檢查平手
+        //共5個X, 4個O
+        temp = 0;
+        for(int x = 0; x < 3; ++x){
+            for(int y = 0; y < 3; ++y){
+                temp += map[x, y];
+            }
+        }
+        if(temp == 13) return 0;
 
         return -1;
+    }
+
+    private void playerWin(){
+        Debug.Log("player win");
+    }
+
+    private void enemyWin(){
+        Debug.Log("enemy win");
+    }
+
+    private void draw(){
+        Debug.Log("draw");
+    }
+
+    private void switchTurn(){
+        playerTurn = !playerTurn;
+
+        if(!playerTurn)
+            EnemyController.instance.minimax(mapIsOccupied);
     }
 
     public void updateMap(int x, int y, bool isPlayer){
@@ -75,8 +99,11 @@ public class GameManager : MonoBehaviour
         mapIsOccupied[x, y] = isPlayer?1:2;
         map[x, y].disable();
 
-        if(isPlayer)
-            EnemyController.instance.minimax(mapIsOccupied);
+        int winner = checkWin(mapIsOccupied);
+        if(winner == 1) playerWin();
+        else if(winner == 2) enemyWin();
+        else if(winner == 0) draw();
+        else switchTurn();
     }
 
     //*create board and grid
