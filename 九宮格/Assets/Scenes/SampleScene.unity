@@ -241,6 +241,8 @@ MonoBehaviour:
   gridLight: {r: 1, g: 0.72156864, b: 0.3137255, a: 1}
   gridDark: {r: 0.6901961, g: 0.34117648, b: 0, a: 1}
   empty: {fileID: 1271435616534486643, guid: 2bfefc47ec2bf234b9826b21790216ea, type: 3}
+  circle: {fileID: 4000640930613486160, guid: c4bc8e915b8e72c478bc60e5239264fe, type: 3}
+  cross: {fileID: 4086084511358148486, guid: 7ce229d7d4dbd1c4eb87e206858e2beb, type: 3}
 --- !u!4 &1539459859
 Transform:
   m_ObjectHideFlags: 0

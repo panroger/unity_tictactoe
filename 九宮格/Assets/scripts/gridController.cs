@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class gridColorChanger : MonoBehaviour
+public class gridController : MonoBehaviour
 {
     [SerializeField] private Color hover;
     [SerializeField] private Color press;
@@ -29,9 +29,12 @@ public class gridColorChanger : MonoBehaviour
         sr.color = press;
     }
 
-    void OnMouseUp()
+    void OnMouseUpAsButton()
     {
-        sr.color = hover;
-        //do something
+        GameManager.instance.updateMap(transform.position.x, transform.position.y, true);
+    }
+
+    public void disable(){
+        gameObject.SetActive(false);
     }
 }
