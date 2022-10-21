@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public Transform cross; //*player
 
     //*0 = no, 1 = player, 2 = CPU
-    private int[,] mapIsOccupied;
+    public int[,] mapIsOccupied;
     private gridController[,] map;
 
     void Awake()
@@ -34,15 +34,23 @@ public class GameManager : MonoBehaviour
         CreateBG();
     }
 
-    public bool checkWin(){
-        int temp;
+    //*-1 = 遊戲繼續, 0 = 平手, 1 = 玩家贏, 2 = CPU贏
+    public int checkWin(){
+        int temp = 0;
+
+        for(int x = 0; x < 3; ++x){
+            for(int y = 0; y < 3; ++y){
+                temp += mapIsOccupied[x, y];
+            }
+        }
+        if(temp == 13) return 0; //平手
 
         //簡查直線
         for(int x = 0; x < 3; ++x){
             if(mapIsOccupied[x, 0] == 0) continue;
 
             temp = mapIsOccupied[x, 0];
-            if(temp == (mapIsOccupied[x, 0] & mapIsOccupied[x, 1] & mapIsOccupied[x, 2])) return true;
+            if(temp == (mapIsOccupied[x, 0] & mapIsOccupied[x, 1] & mapIsOccupied[x, 2])) return temp;
         }
 
         //簡查橫線
@@ -50,22 +58,25 @@ public class GameManager : MonoBehaviour
             if(mapIsOccupied[0, y] == 0) continue;
 
             temp = mapIsOccupied[0, y];
-            if(temp == (mapIsOccupied[0, y] & mapIsOccupied[1, y] & mapIsOccupied[2, y])) return true;
+            if(temp == (mapIsOccupied[0, y] & mapIsOccupied[1, y] & mapIsOccupied[2, y])) return temp;
         }
 
         //檢查對角線
-        if(mapIsOccupied[1, 1] == 0) return false;
+        if(mapIsOccupied[1, 1] == 0) return -1;
         temp = mapIsOccupied[1, 1];
-        if(temp == (mapIsOccupied[0, 0] & mapIsOccupied[1, 1] & mapIsOccupied[2, 2])) return true;
-        else if(temp == (mapIsOccupied[0, 2] & mapIsOccupied[1, 1] & mapIsOccupied[2, 0])) return true;
+        if(temp == (mapIsOccupied[0, 0] & mapIsOccupied[1, 1] & mapIsOccupied[2, 2])) return temp;
+        else if(temp == (mapIsOccupied[0, 2] & mapIsOccupied[1, 1] & mapIsOccupied[2, 0])) return temp;
 
-        return false;
+        return -1;
     }
 
-    public void updateMap(float x, float y, bool isPlayer){
+    public void updateMap(int x, int y, bool isPlayer){
         Instantiate(isPlayer?cross:circle, new Vector3(x, y, 0), Quaternion.identity, p);
-        mapIsOccupied[(int)x, (int)y] = isPlayer?1:2;
-        map[(int)x, (int)y].disable();
+        mapIsOccupied[x, y] = isPlayer?1:2;
+        map[x, y].disable();
+
+        if(isPlayer)
+            EnemyController.instance.minimax(mapIsOccupied);
     }
 
     //*create board and grid
@@ -83,5 +94,17 @@ public class GameManager : MonoBehaviour
                     g.GetComponent<SpriteRenderer>().color = gridLight;
             }
         }
+    }
+
+    public void printMap(int[,] map){
+        string s = "";
+        for(int y = 2; y >= 0; --y){
+            for(int x = 0; x < 3; ++x){
+                s += map[x, y] + " ";
+            }
+            s += "\n";
+        }
+
+        Debug.Log(s);
     }
 }

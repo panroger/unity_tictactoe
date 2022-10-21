@@ -31,7 +31,7 @@ public class gridController : MonoBehaviour
 
     void OnMouseUpAsButton()
     {
-        GameManager.instance.updateMap(transform.position.x, transform.position.y, true);
+        GameManager.instance.updateMap((int)transform.position.x, (int)transform.position.y, true);
     }
 
     public void disable(){
