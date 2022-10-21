@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
     public Transform circle; //*CPU
     public Transform cross; //*player
 
-    //*true = occupied
-    private bool[,] mapIsOccupied;
+    //*0 = no, 1 = player, 2 = CPU
+    private int[,] mapIsOccupied;
     private gridController[,] map;
 
     void Awake()
@@ -29,14 +29,42 @@ public class GameManager : MonoBehaviour
         else
             Destroy(this);
 
-        mapIsOccupied = new bool[3,3];
+        mapIsOccupied = new int[3,3];
         map = new gridController[3, 3];
         CreateBG();
     }
 
+    public bool checkWin(){
+        int temp;
+
+        //簡查直線
+        for(int x = 0; x < 3; ++x){
+            if(mapIsOccupied[x, 0] == 0) continue;
+
+            temp = mapIsOccupied[x, 0];
+            if(temp == (mapIsOccupied[x, 0] & mapIsOccupied[x, 1] & mapIsOccupied[x, 2])) return true;
+        }
+
+        //簡查橫線
+        for(int y = 0; y < 3; ++y){
+            if(mapIsOccupied[0, y] == 0) continue;
+
+            temp = mapIsOccupied[0, y];
+            if(temp == (mapIsOccupied[0, y] & mapIsOccupied[1, y] & mapIsOccupied[2, y])) return true;
+        }
+
+        //檢查對角線
+        if(mapIsOccupied[1, 1] == 0) return false;
+        temp = mapIsOccupied[1, 1];
+        if(temp == (mapIsOccupied[0, 0] & mapIsOccupied[1, 1] & mapIsOccupied[2, 2])) return true;
+        else if(temp == (mapIsOccupied[0, 2] & mapIsOccupied[1, 1] & mapIsOccupied[2, 0])) return true;
+
+        return false;
+    }
+
     public void updateMap(float x, float y, bool isPlayer){
         Instantiate(isPlayer?cross:circle, new Vector3(x, y, 0), Quaternion.identity, p);
-        mapIsOccupied[(int)x, (int)y] = true;
+        mapIsOccupied[(int)x, (int)y] = isPlayer?1:2;
         map[(int)x, (int)y].disable();
     }
 
