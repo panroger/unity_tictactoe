@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
     public GameObject Grid;
     public Transform Board;
     public Color gridLight;
     public Color gridDark;  //default color
     public Transform empty;
 
-    void Start()
+    void Awake()
     {
-        //CreateBG();
+        if(instance == null){
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+            Destroy(this);
+
+        CreateBG();
     }
 
     //create board and grid
