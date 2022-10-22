@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class GameManager : MonoBehaviour
     private gridController[,] map;
     private bool playerTurn;
 
+    public GameObject resultCanvas;
+    public TMP_Text resultText;
+
     void Awake()
     {
         if(instance == null){
@@ -29,7 +33,15 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(this);
+    }
 
+    public void quitGame(){
+        Application.Quit();
+    }
+
+    public void gameStart(){
+        resultCanvas.SetActive(false);
+        if(p != null) Destroy(p.gameObject);
         mapIsOccupied = new int[3,3];
         map = new gridController[3, 3];
         playerTurn = true;
@@ -76,15 +88,21 @@ public class GameManager : MonoBehaviour
     }
 
     private void playerWin(){
-        Debug.Log("player win");
+        //Debug.Log("player win");
+        resultCanvas.SetActive(true);
+        resultText.text = "Win!!";
     }
 
     private void enemyWin(){
-        Debug.Log("enemy win");
+        //Debug.Log("enemy win");
+        resultCanvas.SetActive(true);
+        resultText.text = "Lose..";
     }
 
     private void draw(){
-        Debug.Log("draw");
+        //Debug.Log("draw");
+        resultCanvas.SetActive(true);
+        resultText.text = "Draw";
     }
 
     private void switchTurn(){
