@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject resultCanvas;
     public TMP_Text resultText;
+    public GameObject pauseCanvas;
+    private bool gameIsOver;
 
     void Awake()
     {
@@ -33,6 +35,27 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(this);
+
+        //最一開始不能按暫停
+        gameIsOver = true;
+    }
+
+    void Update()
+    {
+        if(Input.GetKeyDown("space"))
+            pause();
+    }
+
+    private void pause(){
+        if(gameIsOver) return;
+
+        p.gameObject.SetActive(false);
+        pauseCanvas.SetActive(true);
+    }
+
+    public void resume(){
+        p.gameObject.SetActive(true);
+        pauseCanvas.SetActive(false);
     }
 
     public void quitGame(){
@@ -41,6 +64,7 @@ public class GameManager : MonoBehaviour
 
     public void gameStart(){
         resultCanvas.SetActive(false);
+        gameIsOver = false;
         if(p != null) Destroy(p.gameObject);
         mapIsOccupied = new int[3,3];
         map = new gridController[3, 3];
@@ -91,18 +115,21 @@ public class GameManager : MonoBehaviour
         //Debug.Log("player win");
         resultCanvas.SetActive(true);
         resultText.text = "Win!!";
+        gameIsOver = true;
     }
 
     private void enemyWin(){
         //Debug.Log("enemy win");
         resultCanvas.SetActive(true);
         resultText.text = "Lose..";
+        gameIsOver = true;
     }
 
     private void draw(){
         //Debug.Log("draw");
         resultCanvas.SetActive(true);
         resultText.text = "Draw";
+        gameIsOver = true;
     }
 
     private void switchTurn(){
