@@ -29,6 +29,11 @@ public class gridController : MonoBehaviour
         sr.color = press;
     }
 
+    void OnMouseUp()
+    {
+        sr.color = hover;
+    }
+
     void OnMouseUpAsButton()
     {
         GameManager.instance.updateMap((int)transform.position.x, (int)transform.position.y, true);
@@ -36,5 +41,9 @@ public class gridController : MonoBehaviour
 
     public void disable(){
         gameObject.SetActive(false);
+    }
+
+    public void destroySelf(){
+        Destroy(gameObject);
     }
 }

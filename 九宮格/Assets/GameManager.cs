@@ -46,6 +46,21 @@ public class GameManager : MonoBehaviour
             pause();
     }
 
+    private void gameOver(string s){
+        resultCanvas.SetActive(true);
+        resultText.text = s;
+        gameIsOver = true;
+        destroyGridHover();
+    }
+
+    private void destroyGridHover(){
+        for(int x = 0; x < 3; ++x){
+            for(int y = 0; y < 3; ++y){
+                map[x, y].destroySelf();
+            }
+        }
+    }
+
     private void pause(){
         if(gameIsOver) return;
 
@@ -113,23 +128,17 @@ public class GameManager : MonoBehaviour
 
     private void playerWin(){
         //Debug.Log("player win");
-        resultCanvas.SetActive(true);
-        resultText.text = "Win!!";
-        gameIsOver = true;
+        gameOver("Win!!");
     }
 
     private void enemyWin(){
         //Debug.Log("enemy win");
-        resultCanvas.SetActive(true);
-        resultText.text = "Lose..";
-        gameIsOver = true;
+        gameOver("Lose..");
     }
 
     private void draw(){
         //Debug.Log("draw");
-        resultCanvas.SetActive(true);
-        resultText.text = "Draw";
-        gameIsOver = true;
+        gameOver("Draw");
     }
 
     private void switchTurn(){
@@ -140,6 +149,8 @@ public class GameManager : MonoBehaviour
     }
 
     public void updateMap(int x, int y, bool isPlayer){
+        if(gameIsOver) return;
+
         Instantiate(isPlayer?cross:circle, new Vector3(x, y, 0), Quaternion.identity, p);
         mapIsOccupied[x, y] = isPlayer?1:2;
         map[x, y].disable();
